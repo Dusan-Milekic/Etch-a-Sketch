@@ -1,5 +1,7 @@
 let btn = document.querySelector('#btn');
 let squaresList = []
+
+
 btn.addEventListener('click', (e) => {
     DeleteGrid();
     CreateGrid();
@@ -16,13 +18,18 @@ function CreateGrid(){
     for(let i = 0; i < rangeInput.value*rangeInput.value; i++){
         let square = document.createElement('div');
         square.classList.add('square');
+        square.brightness = 1.0;
+        square.brightnessDown = true;
+
         display.appendChild(square);
         squaresList.push(square);
     }
 
     squaresList.forEach(square => {
     square.addEventListener('mouseover',(e) => {
-       square.style.backgroundColor = 'black';
+       square.style.backgroundColor = RandomRgbColor();
+        square.style.filter = `brightness(${Birhestness(square)}%)`;
+
    })})
 
    rangeInput.addEventListener('input', (e) => {
@@ -36,6 +43,33 @@ function DeleteGrid(){
         display.removeChild(display.firstChild);
     }
 }
+
+function RandomRgbColor() {
+    let r = Math.floor(Math.random() * 256);
+    let g = Math.floor(Math.random() * 256);
+    let b = Math.floor(Math.random() * 256);
+    return `rgb(${r}, ${g}, ${b})`;
+}
+
+function Birhestness(square) {
+    if (square.brightnessDown) {
+        square.brightness -= 0.1;
+        if (square.brightness <= 0.0) {
+            square.brightness = 0.0;
+            square.brightnessDown = false;
+        }
+    } else {
+        square.brightness += 0.1;
+        if (square.brightness >= 1.0) {
+            square.brightness = 1.0;
+            square.brightnessDown = true;
+        }
+    }
+
+    return (square.brightness * 100).toFixed(0); // npr. 90 za brightness(90%)
+}
+
+
 
 CreateGrid();
 
